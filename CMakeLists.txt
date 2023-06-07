@@ -17,6 +17,7 @@ find_package(NeoPZ REQUIRED HINTS ../NeoPZ_install ../neopz_install)
 add_library(libreorder SHARED "")
 target_link_libraries(libreorder PUBLIC NeoPZ::pz)
 target_include_directories(libreorder PUBLIC ${PZ_INCLUDE_DIRS})
+target_include_directories(libreorder PUBLIC ${CMAKE_SOURCE_DIR}/sources)
 
 add_subdirectory(sources)
 get_target_property(lib_files libreorder SOURCES)

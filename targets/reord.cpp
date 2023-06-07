@@ -9,6 +9,7 @@
 #include "TPZVTKGeoMesh.h"
 #include "pzcmesh.h"
 #include <DarcyFlow/TPZMixedDarcyFlow.h>
+#include "TPZMixedModelProblem.h"
 #include <TPZNullMaterial.h>
 #include <pzbuildmultiphysicsmesh.h>
 #include <pzskylstrmatrix.h>
@@ -147,7 +148,8 @@ TPZCompMesh* CreateMPMesh(TPZManVector<TPZCompMesh*,2> &meshvec) {
     mpcmesh->SetDimModel(dim);
     
     // Create domain mat
-    TPZMixedDarcyFlow* mat = new TPZMixedDarcyFlow(EDomain, dim);
+//    TPZMixedDarcyFlow* mat = new TPZMixedDarcyFlow(EDomain, dim);
+    TPZMixedModelProblem* mat = new TPZMixedModelProblem(EDomain, dim);
     mat->SetConstantPermeability(1.);
     mpcmesh->InsertMaterialObject(mat);
     
@@ -198,13 +200,13 @@ void SolveProblemDirect(TPZLinearAnalysis &an, TPZCompMesh *cmesh)
 void PrintResultsMultiphysic(TPZVec<TPZCompMesh *> meshvector, TPZLinearAnalysis &an, TPZCompMesh *cmesh)
 {
     
-    TPZManVector<std::string,10> scalnames(2), vecnames(2);
+    TPZManVector<std::string,10> scalnames(1), vecnames(1);
     const int dim = cmesh->Dimension();
     
     scalnames[0] = "Pressure";
-    scalnames[1] = "ExactPressure";
+//    scalnames[1] = "ExactPressure";
     vecnames[0]= "Flux";
-    vecnames[1]= "ExactFlux";
+//    vecnames[1]= "ExactFlux";
     
     int div = 0;
     std::string plotfile = "solutionHdiv.vtk";

@@ -1,163 +1,79 @@
-//
-// Created by Gustavo Batistela on 5/13/21.
-//
-
 #ifndef TPZMixedDarcyFlowOrtotropic_H
 #define TPZMixedDarcyFlowOrtotropic_H
 
-//#include "TPZMatBase.h"
-//#include "TPZMatCombinedSpaces.h"
-//#include "TPZMatErrorCombinedSpaces.h"
-//#include "TPZOrtotropicPermeability.h"
-//
-///**
-// * @ingroup material
-// * @brief This class implements a mixed approximation for the Darcy flow equation for isotropic materials.
-// *
-// * The Darcy flow equation is given by: \f[\nabla \cdot \boldsymbol{\sigma} = f,\f]
-// * where \f$\boldsymbol{\sigma} = -K \nabla u\f$ and \f$u\f$ are the flux and pressure field to be solved respectively,
-// * \f$K\f$ is the permeability tensor and \f$f\f$ is the source term.
-// *
-// * @see TPZDarcyFlow For an H1-conforming approximation.
-// * @see TPZIsotropicPermeability For setting the permeability field.
-// */
-//
-//class TPZMixedDarcyFlowOrtotropic : public TPZMatBase<STATE, TPZMatCombinedSpacesT<STATE>,
-//        TPZMatErrorCombinedSpaces<STATE>, TPZOrtotropicPermeability> {
-//
-//    // type alias to improve constructor readability
-//    using TBase = TPZMatBase<STATE, TPZMatCombinedSpacesT<STATE>,
-//            TPZMatErrorCombinedSpaces<STATE>, TPZOrtotropicPermeability>;
-//
-//public:
-//    /**
-//     * @brief Default constructor
-//     */
-//    TPZMixedDarcyFlowOrtotropic();
-//
-//    /**
-//	 * @brief Class constructor
-//	 * @param [in] id material id
-//	 * @param [in] dim problem dimension
-//	 */
-//    [[maybe_unused]] TPZMixedDarcyFlowOrtotropic(int id, int dim);
-//
-//    /**
-//             copy constructor
-//     */
-//    TPZMixedDarcyFlowOrtotropic(const TPZMixedDarcyFlowOrtotropic &copy);
-//    /**
-//             copy constructor
-//     */
-//    TPZMixedDarcyFlowOrtotropic &operator=(const TPZMixedDarcyFlowOrtotropic &copy);
-//    /**
-//	 * @brief Returns a 'std::string' with the name of the material
-//	 */
-//    [[nodiscard]] std::string Name() const override { return "TPZMixedDarcyFlowOrtotropic"; }
-//
-//    /**
-//	 * @brief Returns the problem dimension
-//	 */
-//    [[nodiscard]] int Dimension() const override { return this->fDim; }
-//
-//    /**
-//	 * @brief Returns the number of state variables
-//	 */
-//    [[nodiscard]] int NStateVariables() const override { return 1; }
-//
-//    /**
-//	 * @brief Returns the number of errors to be evaluated
-//     *
-//     * Returns the number of errors to be evaluated, that is, the number of error norms associated
-//     * with the problem.
-//     */
-//    int NEvalErrors() const override { return 5; }
-//
-//    /**
-//     * @brief Sets problem dimension
-//     */
-//    virtual void SetDimension(int dim);
-//
-//    /**
-//     * @brief It computes a contribution to the stiffness matrix and load vector at one integration point
-//     * @param[in] datavec stores all input data
-//     * @param[in] weight is the weight of the integration rule
-//     * @param[out] ek is the element matrix
-//     * @param[out] ef is the rhs vector
-//     */
-//    void Contribute(const TPZVec<TPZMaterialDataT<STATE>> &datavec, REAL weight, TPZFMatrix<STATE> &ek,
-//                    TPZFMatrix<STATE> &ef) override;
-//
-//    /**
-//     * @brief It computes a contribution to the stiffness matrix and load vector at one BC integration point
-//     * @param[in] datavec stores all input data
-//     * @param[in] weight is the weight of the integration rule
-//     * @param[out] ek is the element matrix
-//     * @param[out] ef is the rhs vector
-//     * @param[in] bc is the boundary condition material
-//     */
-//    void ContributeBC(const TPZVec<TPZMaterialDataT<STATE>> &datavec, REAL weight, TPZFMatrix<STATE> &ek,
-//                      TPZFMatrix<STATE> &ef, TPZBndCondT<STATE> &bc) override;
-//
-//    /**
-//     * @brief Returns an integer associated with a post-processing variable name
-//     * @param [in] name string containing the name of the post-processing variable. Ex: "Pressure".
-//     */
-//    [[nodiscard]] int VariableIndex(const std::string &name) const override;
-//
-//    /**
-//     * @brief Returns an integer with the dimension of a post-processing variable
-//     * @param [in] var index of the post-processing variable, according to TPZDarcyFlow::VariableIndex method.
-//     */
-//    [[nodiscard]] int NSolutionVariables(int var) const override;
-//
-//    /**
-//     * @brief Returns the solution associated with the var index based on the
-//     * finite element approximation at a point
-//     * @param [in] datavec material data associated with a given integration point
-//     * @param [in] var index of the variable to be calculated
-//     * @param [out] solOut vector to store the solution
-//     */
-//    void Solution(const TPZVec<TPZMaterialDataT<STATE>> &datavec, int var, TPZVec<STATE> &solOut) override;
-//
-//    /**
-//     * @brief Calculates the approximation error at a point
-//     * @param [in] data material data of the integration point
-//     * @param [out] errors calculated errors
-//     */
-//    void Errors(const TPZVec<TPZMaterialDataT<STATE>> &data, TPZVec<REAL> &errors) override;
-//
-//    /*
-//     * @brief Fill requirements for volumetric contribute
-//     */
-//    void FillDataRequirements(TPZVec<TPZMaterialDataT<STATE> > &datavec) const override;
-//
-//    /*
-//     * @brief Fill requirements for boundary contribute
-//     */
-//    void FillBoundaryConditionDataRequirements(int type, TPZVec<TPZMaterialDataT<STATE> > &datavec) const override;
-//
-//    /**
-//     * @brief Returns an unique class identifier
-//     */
-//    [[nodiscard]] int ClassId() const override;
-//
-//    /**
-//     * @brief Creates another material of the same type
-//     */
-//    [[nodiscard]] TPZMaterial *NewMaterial() const override;
-//
-//    /**
-//     * @brief Prints data associated with the material.
-//     */
-//    void Print(std::ostream & out) const override;
-//
-//protected:
-//    /**
-//     * @brief Problem dimension
-//     */
-//    int fDim;
-//
-//};
+#include "DarcyFlow/TPZMixedDarcyFlow.h"
 
-#endif //TPZMixedDarcyFlowOrtotropic_H
+/**
+ * @ingroup material
+ * @brief This class implements a mixed approximation for the Darcy flow equation with a zero order in the conservation eq. The constitutive law remains the same:
+ * div(sigma) + u  = f
+ * sigma = -K.grad(u)
+ */
+
+class TPZMixedModelProblem : public TPZMixedDarcyFlow {
+    using TBase = TPZMixedDarcyFlow;
+    
+public:
+    
+    /// Default constructor
+    TPZMixedModelProblem();
+    
+    /// Constructor based on a material id
+    TPZMixedModelProblem(int mat_id, int dimension);
+    
+    /// Constructor based on a TPBrMatMixedDarcy object
+    TPZMixedModelProblem(const TPZMixedModelProblem & other);
+    
+    /// Constructor based on a TPBrMatMixedDarcy object
+    TPZMixedModelProblem &operator=(const TPZMixedModelProblem & other);
+    
+    /// Default destructor
+    ~TPZMixedModelProblem();
+    
+    /// Set the required data at each integration point
+    void FillDataRequirements( TPZVec<TPZMaterialDataT<STATE>> &datavec)const override;
+    
+    /// Set the required data at each integration point
+    void FillBoundaryConditionDataRequirements(int type, TPZVec<TPZMaterialDataT<STATE>> &datavec) const override;
+    
+    /// Returns the name of the material
+    std::string Name() const override {
+        return "TPZMixedModelProblem";
+    }
+    
+    /// Returns the number of state variables associated with the material
+    int NStateVariables() const override {return 1;}
+    
+    virtual TPZMaterial *NewMaterial() const override
+    {
+        return new TPZMixedModelProblem(*this);
+    }
+    
+    /// Set data transfer object
+    //    void SetDataTransfer(TMRSDataTransfer & SimData);
+    
+    /// Print out the data associated with the material
+    void Print(std::ostream &out = std::cout) const override;
+    
+    /// Returns the variable index associated with the name
+    int VariableIndex(const std::string &name) const override;
+    
+    /// returns the number of variables associated with the variable indexed by var.
+    int NSolutionVariables(int var) const override;
+    
+    /// Returns the solution associated with the var index based on a finite element approximation
+    void Solution(const TPZVec<TPZMaterialDataT<STATE>> &datavec, int var, TPZVec<REAL> &Solout) override;
+    
+    
+    // Contribute Methods being used
+    void Contribute(const TPZVec<TPZMaterialDataT<STATE>> &datavec, REAL weight, TPZFMatrix<STATE> &ek, TPZFMatrix<STATE> &ef) override;
+        
+    void Contribute(const TPZVec<TPZMaterialDataT<STATE>> &datavec, REAL weight, TPZFMatrix<STATE> &ef) override;
+    
+    void ContributeBC(const TPZVec<TPZMaterialDataT<STATE>> &datavec, REAL weight, TPZFMatrix<STATE> &ek, TPZFMatrix<STATE> &ef, TPZBndCondT<STATE> &bc) override;
+    
+    void ContributeBC(const TPZVec<TPZMaterialDataT<STATE>> &datavec, REAL weight, TPZFMatrix<STATE> &ef, TPZBndCondT<STATE> &bc)override;
+    
+};
+
+#endif
