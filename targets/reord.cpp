@@ -215,19 +215,23 @@ void SolveProblemDirect(TPZLinearAnalysis &an, TPZCompMesh *cmesh)
     TPZSimpleTimer time_ass;
     an.Assemble();
     std::cout << "Total time = " << time_ass.ReturnTimeDouble()/1000. << " s" << std::endl;
+
     
-    std::ifstream in("permvec.txt");
-    int64_t npos = -1;
-    in >> npos;
-    TPZVec<int64_t> perm(npos);
-    for (int i = 0; i < npos; i++) {
-        int64_t pos = -1;
-        in >> pos;
-        perm[i] = pos;
-    }
+    const bool isUsePermVecFromFile = false;
     TPZMatrix<STATE>* mat = an.MatrixSolver<STATE>().Matrix().operator->();
     TPZSYsmpMatrix<STATE>* pardisomat = dynamic_cast<TPZSYsmpMatrix<STATE>*>(mat);
-    pardisomat->Permute(perm);
+    if(isUsePermVecFromFile) {
+        std::ifstream in("permvec.txt");
+        int64_t npos = -1;
+        in >> npos;
+        TPZVec<int64_t> perm(npos);
+        for (int i = 0; i < npos; i++) {
+            int64_t pos = -1;
+            in >> pos;
+            perm[i] = pos;
+        }
+        pardisomat->Permute(perm);
+    }
     const int64_t resolution = 300;
     TPZFMatrix<REAL> fillin;
     pardisomat->ComputeFillIn(resolution, fillin);
@@ -240,7 +244,6 @@ void SolveProblemDirect(TPZLinearAnalysis &an, TPZCompMesh *cmesh)
     TPZSimpleTimer time_sol;
     an.Solve();
     std::cout << "Total time = " << time_sol.ReturnTimeDouble()/1000. << " s" << std::endl;
-
     
     return;
 }
