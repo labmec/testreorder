@@ -79,25 +79,24 @@ void TPZMixedModelProblem::Contribute(const TPZVec<TPZMaterialDataT<STATE>> &dat
     TBase::Contribute(datavec, weight, ek, ef);
     
     // Now, add the terms relative to u.utest
-           
+
     int qb = 0;
     int pb = 1;
-    
+
     TPZFNMatrix<100,REAL> phi_ps       = datavec[pb].phi;
     TPZFNMatrix<100,REAL> dphi_ps      = datavec[pb].dphix;
-    
+
     int64_t nphi_q       = datavec[qb].fVecShapeIndex.NElements();
     int64_t nphi_p       = phi_ps.Rows();
     int64_t first_q      = 0;
     int64_t first_p      = nphi_q + first_q;
-           
+    STATE alpha = 10000.;
     for (int64_t ip = 0; ip < nphi_p; ip++) {
         for (int64_t jp = 0; jp < nphi_p; jp++) {
-            ek(ip + first_q, jp + first_p) += weight * ( - phi_ps(ip,0) ) * phi_ps(jp,0);
-            ek(jp + first_p, ip + first_q) += weight * ( - phi_ps(ip,0) ) * phi_ps(jp,0);
+            ek(ip + first_p, jp + first_p) += alpha*weight * ( - phi_ps(ip,0) ) * phi_ps(jp,0);
         }
     }
-    
+
 
 }
 
